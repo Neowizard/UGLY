@@ -1,0 +1,44 @@
+<S> := <sexprs>
+<sexpr> := <boolean> | <char> | <num> | <string> | <symbol> | <list> | <dotted list> | <vector> | <quoted>
+<sexprs> := (<SPACES> <sexpr> <SPACES>)*
+
+<boolean> := <BOOL_PREFIX> (<BOOL_T> | <BOOL_F>) <SPACE>
+
+<char> := <CHAR_PREFIX> <any-char>
+
+<num> := (<POS_SIGN>|<NEG_SIGN>)? <nat> 
+
+<nat> := <DIGIT>+
+
+<string char> := (<any-char> \ <STRING_END>) | <STRING_QUOTE>
+<string> := <STRING_START> <string char>* <STRING_END>
+
+<symbol> := (<SYMBOL_CHAR>+)
+
+<list> := <LIST_START> <sexprs> <LIST_END>
+<dotted list> := <LIST_START> (<sexpr> <SPACES>) <sexprs> <LIST_DOT> <sexpr> <LIST_END>
+
+<vector> := <VECTOR_START> (<sexpr> <SPACES>)* <VECTOR_END>
+
+<quoted> := <QUOTE> <sexpr>
+
+<comment> := ';' (<any-char> \ <newline>) <newline>
+<SPACE> := (' ' | <tab> | <newline> | <comment>)
+<SPACES> := (<SPACE>*) ;{squeeze}
+<BOOL_PREFIX> := <SPACES> '#'
+<BOOL_T> := `t` <SPACES>
+<BOOL_F> := `f` <SPACES>
+<CHAR_PREFIX> := <SPACES> '#\\'
+<POS_SIGN> := <SPACES> '+'
+<NEG_SIGN> := <SPACES> '-'
+<DIGIT> := '0'-'9'
+<STRING_START> := <SPACES> '"'
+<STRING_END> := '"' <SPACES>
+<STRING_QUOTE> := '\\"'
+<SYMBOL_CHAR> := '0'-'9'|'a'-'z'|'A'-'Z'|'!'|'$'|'^'|'*'|'-'|'_'|'='|'+'|'<'|'>'|'?'|'/'|':'
+<LIST_START> := <SPACES> '(' <SPACES>
+<LIST_END> := <SPACES> ')' <SPACES>
+<LIST_DOT> := <SPACES> '.' <SPACES>
+<VECTOR_START> := <SPACES> '#(' <SPACES>
+<VECTOR_END> := <SPACES> ')'<SPACES>
+<QUOTE> := <SPACES> '\'' <SPACES>

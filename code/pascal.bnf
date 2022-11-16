@@ -1,0 +1,149 @@
+<S> ::= <program>
+<program> ::= <program header> <block> <program footer>
+<program header> ::= <PROGRAM_PREFIX> <identifier> <SEMICOLON>
+<program footer> ::= <PERIOD>
+<block> ::= <variable declaration part> <procedure declaration part> <statement part>
+
+<declarations> =  (<variable declaration> <SEMICOLON>)*
+<variables declarations> =  <declarations> <variable declaration>
+<variable declaration part> ::= <VAR> <variables declarations>| <empty>
+
+<variable declaration> ::= <identifier> ((<COMMA> <identifier>)*) <COLON> <type>
+
+<type> ::= <array type> | <simple type> 
+
+<array type> ::= <ARRAY_PREFIX> <L_BRACKET> <index range> <R_BRACKET> <ARRAY_TYPE_PREFIX> <simple type>
+
+<index range> ::= <integer constant> <RANGE_ELLIPSIS> <integer constant>
+
+<simple type> ::= <identifier>
+
+<procedures declarations> ::= (<procedure declaration> <SEMICOLON>)*
+<procedure declaration part> ::= <procedures declarations> <procedure declaration> | <epsilon>
+
+<procedure header> ::= <PROCEDURE_PREFIX> <identifier> <SEMICOLON>
+
+<procedure declaration> ::= <procedure header> <block>
+
+<statement part> ::= <compound statement>
+
+<statements> ::= (<statement> <SEMICOLON>)*
+<block statements> ::=  <statements> <statement>
+
+<compound statement> ::= ((<COMPOUND_STATEMENTS_PREFIX>) <block statements>  <COMPOUND_STATEMENTS_POSTFIX>)
+
+<statement> ::= <structured statement> | <simple statement>
+
+<simple statement> ::= <assignment statement> | <read statement> | <write statement> | <procedure statement> 
+
+<assignment statement> ::= <variable> <ASSIGN_OP> <expression>
+
+<procedure statement> ::= <identifier>
+
+<read statement> ::= <READ_PREFIX> <L_PAREN> <input variable> (<COMMA> <input variable>)* <R_PAREN>
+
+<input variable> ::= <variable>
+<write arg> ::= <output value> <COMMA>
+<write args> ::= <write arg>* <output value>
+<write statement> ::= <WRITE_PREFIX> <L_PAREN> <write args> <R_PAREN>
+
+<output value> ::= <expression>
+
+<structured statement> ::= <compound statement> | <if statement> | <while statement>
+
+<if header> ::=  <IF> <expression> <THEN>
+<if statement> ::= <if header> <statement> <else> | <if header> <statement>
+<else> ::= <ELSE> <statement>
+
+<while header> ::= <WHILE> <expression> <DO>
+<while statement> ::= <while header> <statement>
+
+<expression> ::= <simple expression> <relational operator> <simple expression> |  <simple expression>
+
+<simple expression> ::= <sign>? <term> (<adding operator> <term>)*
+
+<term> ::= <factor> (<multiplying operator> <factor>)*
+
+<factor> ::= <variable> | <constant> | <L_PAREN> <expression> <R_PAREN> | <NOT> <factor>
+
+<relational operator> ::= <EQ_OP> | <NEQ_OP> | <LT_OP> | <LTE_OP> | <GTE_OP> | <GT_OP>
+
+<sign> ::= <POS_SIGN> | <NEG_SIGN>
+
+<adding operator> ::= <ADD_OP> | <SUB_OP> | <OR_OP>
+
+<multiplying operator> ::= <MUL_OP> | <DIV_OP> | <AND_OP>
+
+<variable> ::=  <indexed variable> | <entire variable> 
+
+<indexed variable> ::= <array variable> <L_BRACKET> <expression> <R_BRACKET>
+
+<array variable> ::= <entire variable>
+
+<entire variable> ::= <identifier>
+
+<empty> = <epsilon>
+
+<constant> ::= <integer constant> | <string constant> | <identifier>
+
+<integer constant> ::= <SPACES> <DIGIT>+ <SPACES>
+
+<identifier> ::= <SPACES> <ident first char> <ident char>* <SPACES>
+<ident first char> ::= <ALPHA> | '_'
+<ident char> ::= <alphanumeric> | '_'
+
+<alphanumeric> ::= <ALPHA> | <DIGIT>
+
+<string constant> ::= '\'' (<any-char> \ '\'')* '\'' 
+
+<line comment> ::= <COMMENT_PREFIX> (<any-char> \ <newline>)* <newline>
+<multiline comment> ::= <MULTILINE_COMMENT_PREFIX> (<any-char> \ <MULTILINE_COMMENT_POSTFIX>)* <MULTILINE_COMMENT_POSTFIX>
+
+<comment> ::= <line comment> | <multiline comment>
+
+<SPACE> ::= (' ' | <tab> | <newline> | <comment>)
+<SPACES> ::= <SPACE>*
+<PROGRAM_PREFIX> ::= <SPACES> `program` <SPACES>
+<SEMICOLON> ::= <SPACES> ';' <SPACES>
+<PERIOD> ::= <SPACES> '.' <SPACES>
+<VAR> ::= <SPACES> `var` <SPACES>
+<COMMA> ::= <SPACES> ',' <SPACES>
+<COLON> ::= <SPACES> ':' <SPACES>
+<L_BRACKET> ::= <SPACES> '[' <SPACES>
+<R_BRACKET> ::= <SPACES> ']' <SPACES>
+<L_PAREN> ::= <SPACES> '(' <SPACES>
+<R_PAREN> ::= <SPACES> ')' <SPACES>
+<ARRAY_PREFIX> ::= <SPACES> `array` <SPACES>
+<ARRAY_TYPE_PREFIX> ::= <SPACES> `of` <SPACES>
+<RANGE_ELLIPSIS> ::= <SPACES> '..' <SPACES>
+<PROCEDURE_PREFIX> ::= <SPACES> `procedure` <SPACES>
+<COMPOUND_STATEMENTS_PREFIX> ::= <SPACES> `begin` <SPACES>
+<COMPOUND_STATEMENTS_POSTFIX> ::= <SPACES> `end` <SPACES>
+<READ_PREFIX> ::= <SPACES> `read` <SPACES>
+<WRITE_PREFIX> ::= <SPACES> `write` <SPACES>
+<ASSIGN_OP> ::= <SPACES> ':=' <SPACES>
+<DIGIT> ::= '0'-'9'
+<ALPHA> ::= 'a'-'z' | 'A'-'Z'
+<IF> ::= <SPACES> `if` <SPACES>
+<THEN> ::= <SPACES> `then` <SPACES>
+<ELSE> ::= <SPACES> `else` <SPACES>
+<WHILE> ::= <SPACES> `while` <SPACES>
+<DO> ::= <SPACES> `do` <SPACES>
+<NOT> ::= <SPACES> `not` <SPACES>
+<EQ_OP> ::= <SPACES> '=' <SPACES>
+<LT_OP> ::= <SPACES> '<' <SPACES>
+<GT_OP> ::= <SPACES> '>' <SPACES>
+<LTE_OP> ::= <SPACES> '<=' <SPACES>
+<GTE_OP> ::= <SPACES> '>=' <SPACES>
+<NEQ_OP> ::= <SPACES> '<>' <SPACES>
+<POS_SIGN> ::= <SPACES> '+'
+<NEG_SIGN> ::= <SPACES> '-'
+<ADD_OP> ::= <SPACES> '+' <SPACES>
+<SUB_OP> ::= <SPACES> '-' <SPACES>
+<OR_OP> ::= <SPACES> `or` <SPACES>
+<MUL_OP> ::= <SPACES> '*' <SPACES>
+<DIV_OP> ::= <SPACES> '/' <SPACES>
+<AND_OP> ::= <SPACES> `and` <SPACES>
+<COMMENT_PREFIX> ::= '//'
+<MULTILINE_COMMENT_PREFIX> ::= '{'
+<MULTILINE_COMMENT_POSTFIX> ::= '}'

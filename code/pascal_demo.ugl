@@ -1,0 +1,90 @@
+;; These are the global settings.
+#line_limit=100                 ;; default 80
+#soft_line_limit=80             ;; default 80
+#tab_width=2                    ;; default 4
+
+;; Statements end with a newline
+append(<SEMICOLON>, '\n')
+
+
+;; String constants should be preserved as is
+verbatim(<string constant>)
+
+
+;; the '::' operator means RHS of
+;; '::' returns a nonterminal value type ('nt' in the example)
+;; '::' is currently unsupported
+
+upcase([<AND_OP>, <NOT>, <IF>, <THEN>, <ELSE>, <ARRAY_TYPE_PREFIX>, <WHILE>, <DO>, <COMPOUND_STATEMENTS_PREFIX>, <COMPOUND_STATEMENTS_POSTFIX>, <READ_PREFIX>, <WRITE_PREFIX>, <VAR>, <ARRAY_PREFIX>, <PROCEDURE_PREFIX>, <PROGRAM_PREFIX>]) ;; apply upcase to all keywords
+
+;; All operations can take a value or a list of values
+;; Extend line limit to text parsed by <read statement> or <write statement>
+line_limit([<read statement>, <write statement>], 200) 
+
+
+;; Given a production of the form:
+;;       <rw statement> = <read statement> | <write statement>
+;; We can write the above code like so
+;; let nt::<rw statement> 
+;; line_limit(nt, 200)
+
+
+;; All expressions in an "under" block apply only to output nested under
+;; the given nonterminal in the AST
+under [<while statement>, <compound statement>]
+{
+        indent(<statement>) ;; indent statetments in a while loop
+}
+
+;; The ':' operator means produced by, and refers to the parser's output
+;; ':' will return a string value type
+;; If text produced by <if statement> is longer than 80 characters then 
+;; apply operators to nested syntactic elements (implies "under")
+;; The comperative operators >/</>=/<=/=/!= refer to the length of a string
+let s:<if statement>
+if <if statement> > 80 
+{
+        ;; break line after each element in the "if" statement
+        append(<IF>, '\n')
+        append(<expression>, '\n')
+        append(<THEN>, '\n')
+        append(<statement>, '\n')
+        append(<else>, '\n')
+        
+        indent(<expression>)       ;; The conditional and
+        indent(<statement>)        ;; the dit/dif statements are indented
+
+        soft_wrap(<statment>)      ;; wrap dif/dif at soft_line_limit (80) chars
+}
+
+;; Expressions no a part of assignments are prepended with a space
+not under <assignment statement>
+{
+        prepend(' ', <expression>)
+}
+
+
+append(' ', <COLON>) ;; Colons have one space after them
+
+
+;; As with <COLON> do the same to all relation ops (</>/<=/>=/=/<>) but
+;; add spaces on both ends of the operator
+let nt::<relational operator> 
+append(' ', nt)
+prepend(' ', nt)
+
+
+;; When Wrapping <assignment statement>, first wrap it at <ASSIGN_OP>
+;; Without this, wraps the last element that didn't exceed line_limit
+wrap(<assignment statement>, <ASSIGN_OP>)
+
+
+;; Variable declaration is indented and the "var" keyword is deteched on its own line
+indent(<variable declaration>)
+append(<VAR>,'\n')
+
+;; Where ever there's a list (star/plus/catenation) of <variable declaration>,
+;; the output will be centered around the text parsed by <COLON> 
+center(<variable declaration>, <COLON>)
+
+

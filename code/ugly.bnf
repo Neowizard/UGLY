@@ -1,0 +1,80 @@
+<COMMENT> := ';' (<any-char> \ <newline>)* <newline>
+<SPACE> := ' ' | <tab> | <newline> | <COMMENT>
+<SPACES> := <SPACE>*
+<LET> := <SPACES> `let` <SPACE>+
+<UNDER> := <SPACES> `under` <SPACES>
+<IF> := <SPACES> `if` <SPACE>+
+<NOT> := <SPACES> (`not` | '!') <SPACES>
+<LT> := <SPACES> '<' <SPACES>
+<LT> := <SPACES> '<' <SPACES>
+<GT> := <SPACES> '>' <SPACES>
+<EQ> := <SPACES> '=' <SPACES>
+<LTE> := <SPACES> '<=' <SPACES>
+<GTE> := <SPACES> '>=' <SPACES>
+<NEQ> := <SPACES> ('!='|'<>') <SPACES>
+<CONTAINS> := <SPACES> `contains` <SPACES>
+<ENDS_WITH> := <SPACES> `endswith` <SPACES>
+<STARTS_WITH> := <SPACES> `startswith` <SPACES>
+<OP_L_BRACKET> := <SPACES> '(' <SPACES>
+<OP_R_BRACKET> := <SPACES> ')' <SPACES>
+<NT_L_BRACKET> := <SPACES> '<' <SPACES>
+<NT_R_BRACKET> := <SPACES> '>' <SPACES>
+<LIST_L_BRACKET> := <SPACES> '[' <SPACES>
+<LIST_R_BRACKET> := <SPACES> ']' <SPACES>
+<BLOCK_L_BRACKET> ::= <SPACES> '{' <SPACES>
+<BLOCK_R_BRACKET> ::= <SPACES> '}' <SPACES>
+<LIT_L_QUOTE> := <SPACES> '\''
+<LIT_R_QUOTE> := '\'' <SPACES>
+<LIT_CI_L_QUOTE> := <SPACES> '\`'
+<LIT_CI_R_QUOTE> := '\`' <SPACES>
+<GLOBAL_SETTING_PREFIX> := <SPACES> '#' 
+<GLOBAL_ASSIGN> := <SPACES> '=' <SPACES>
+<PRODUCED_BY> := <SPACES> ':' <SPACES>
+<RHS_OF> := <SPACES> '::' <SPACES>
+<DIGIT> := ('0'-'9')
+<ALPHA> := 'a'-'z' | 'A'-'Z'
+<LIST_SEP> := <SPACES> ',' <SPACES>
+<ARG_SEP> := <SPACES> ',' <SPACES>
+
+<ALPHANUM> ::= (<ALPHA> | <DIGIT>)
+
+<identifier> ::= <SPACES> (<ALPHANUM> | '_')+ <SPACES>
+<num> ::= <SPACES> <DIGIT>+ <SPACES>   
+
+<nt name> ::= (<ALPHANUM> | ' ' | '_' | '-')+
+<nt> ::= <NT_L_BRACKET> <nt name> <NT_R_BRACKET>
+<lit> ::=  <LIT_CI_L_QUOTE> (<any-char> \ <LIT_CI_R_QUOTE>)* <LIT_CI_R_QUOTE>
+<lit ci> ::= <LIT_L_QUOTE> (<any-char> \ <LIT_R_QUOTE>)* <LIT_R_QUOTE>
+<literal> ::= <lit> | <lit ci>
+
+<variable> ::= <identifier>
+
+<simple value> ::= <nt> | <literal>
+<list element> := <simple value> | <variable>
+<list elements> := <list element> (<LIST_SEP> <list element>)* | <epsilon>
+<list> ::= <LIST_L_BRACKET> <list elements> <LIST_R_BRACKET>
+<value> ::= <list> | <simple value> | <num>
+
+<expr> ::= <value> | <variable>
+
+<global setting> ::= <GLOBAL_SETTING_PREFIX> <identifier> <GLOBAL_ASSIGN> <value>
+
+<argument> ::= <expr>
+<arguments> ::= <argument> (<ARG_SEP> <argument>)* | <epsilon>
+<operation> ::= <identifier> <OP_L_BRACKET> <arguments> <OP_R_BRACKET>
+
+<var definition> ::= <variable> (<PRODUCED_BY> | <RHS_OF>) <expr>
+
+<let> := <LET> <var definition>
+<block statements> := <statement>*
+<under> := <NOT>? <UNDER> <expr> <BLOCK_L_BRACKET> <block statements> <BLOCK_R_BRACKET> ;<block>
+
+<logical op> := <LT> | <GT> | <EQ> | <LTE> | <GTE> | <NEQ> | <CONTAINS> | <ENDS_WITH> | <STARTS_WITH>
+<condition> := <NOT>? <variable> <logical op> <expr>
+<if> := <IF> <condition> <block>
+
+<block> := <BLOCK_L_BRACKET>$ (<statement>*)$ <BLOCK_R_BRACKET>$
+
+<statement> := <under> | <operation> | <let> | <if>
+<statements> := (<global setting> | <statement>)+
+<ugly> :=  <statements>

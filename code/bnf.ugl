@@ -1,0 +1,5 @@
+replace(<expand-to>, '::=')
+align_center(<grammar>)
+;under <range-ci> {
+;      upcase(<lit-char>)
+;}

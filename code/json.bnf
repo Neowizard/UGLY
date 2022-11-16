@@ -1,0 +1,56 @@
+<S> := <json>
+<json> := <value>
+
+<value> := <object> | <array> | <string> | <number> | <bool> | <NULL>
+
+<bool> := <TRUE> | <FALSE>
+
+<object> := <OBJ_OPEN> <object members> <OBJ_CLOSE>
+<object members> := <members> <member>
+<members> := (<member> <MEMBER_SEP>)*
+<member> := <member name> <MEMBER_COLON> <value>
+<member name> := <string>
+
+<array> := <ARRAY_OPEN> <array elements> <ARRAY_CLOSE>
+<array elements> := <elements> <element>
+<element> := <value>
+<elements> := (<value> <ARRAY_SEP>)*
+
+<string> := <STRING_OPEN> <string chars> <STRING_CLOSE>
+<string chars> := <string char>*
+<string char> := <any-char> \ (<ESCAPE> | <STRING_CLOSE>) | <escaped>
+<escaped> := <ESCAPE> (<ESCAPED_CHARS> | <hex>)
+<hex> := <HEX_PREFIX> <HEX_DIGIT> <HEX_DIGIT> <HEX_DIGIT>
+
+<number> := <integer> <fraction>? <exponent>?
+<integer> := <NEG>? <DIGIT>+
+<fraction> := <FRACT_PREFIX> <DIGIT>+
+<exponent> := <EXP_PREFIX> <SIGN> <DIGIT>+
+
+<comment> := '#' (<any-char> \ <newline>)* <newline>
+<SPACES> := (' ' | <tab> | <newline> | <comment>)*
+<OBJ_OPEN> := <SPACES> '{' <SPACES>
+<MEMBER_SEP> := <SPACES> ',' <SPACES>
+<MEMBER_COLON> := <SPACES> ':' <SPACES>
+<OBJ_CLOSE> := <SPACES> '}' <SPACES>
+
+<ARRAY_OPEN> := <SPACES> '[' <SPACES>
+<ARRAY_SEP> := <SPACES> ',' <SPACES>
+<ARRAY_CLOSE> := <SPACES> ']' <SPACES>
+
+<STRING_OPEN> := <SPACES> '"'
+<ESCAPE> := '\\'
+<ESCAPED_CHARS> := '"' | '\\' | 'b' | 'f' | 'n' | 'r' | 't' 
+<HEX_DIGIT> := '0'-'9' | 'a'-'f' | 'A'-'F'
+<STRING_CLOSE> := '"' <SPACES>
+
+<FRACT_PREFIX> := '.'
+<EXP_PREFIX> := 'e'
+
+<NEG> := '-'
+<DIGIT> := '0'-'9'
+<SIGN> := '+' | '-'
+
+<TRUE> := <SPACES> 'true' <SPACES>
+<FALSE> := <SPACES> 'false' <SPACES>
+<NULL> := <SPACES> 'null' <SPACES>

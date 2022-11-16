@@ -1,0 +1,44 @@
+#line_limit=40
+#tab_width=2
+
+
+
+; Layout program vertically
+verts([<block>, <declarations>, <variables declarations>,
+       <variable declaration part>, <procedure declaration>,
+       <procedure declaration part>, <compound statement>,
+       <block statements>, <statements>, <while statement>,
+       <if statement>])
+
+; The trailing period at the end of a program shold not
+;  be placed on a new line
+vert_skip_last(<program>)
+
+; Block indentations
+indent(<variables declarations>)
+indent(<block statements>)
+
+; Remove spaces in expressions used as array indices since
+;  they dont't improve readability
+under <indexed variable>{
+      under <expression> {
+            skip(<SPACES>)
+      }
+}
+
+; Turn program and block keywords to upper case for better
+;  visibility
+upcase(<COMPOUND_STATEMENTS_PREFIX>)
+upcase(<COMPOUND_STATEMENTS_POSTFIX>)
+upcase(<PROGRAM_PREFIX>)
+upcase(<IF>)
+upcase(<THEN>)
+upcase(<ELSE>)
+upcase(<WHILE>)
+upcase(<DO>)
+upcase(<VAR>)
+
+; Prevent line_wrap from breaking up arguments for write
+;  statements (including their separating comma)
+no_wrap(<write arg>)
+

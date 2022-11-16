@@ -1,0 +1,7 @@
+squeeze(<SPACES>)
+vert(<statements>)
+vert(<under>)
+wrap_after(<BLOCK_L_BRACKET>)
+vert(<block statements>)
+indent(<block statements>)
+vert(<block>)

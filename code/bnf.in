@@ -1,0 +1,5 @@
+<digit> = '0'-'9' 
+<num> := ' '* <digit>+ ' '* 
+<CI word> -> `a`-`z`*
+<word> ::= 'a'-'z'* 
+<S> ::= <num> | <word> | <CI word>

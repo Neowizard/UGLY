@@ -1,0 +1,18 @@
+#line_limit=40
+;no_wrap(<S>)
+
+;squeeze(<SPACES>)
+;skip(<SPACES>)
+;vert(<list>)
+;under <list> {
+;indent(<sexpr>)
+;append(<sexpr>, ' ')
+;        }
+;vert_list(<list>)
+;skip_wrap(<LIST_START>)
+;no_wrap(<symbol>)
+;no_wrap(<char>)
+;no_wrap(<num>)
+;no_wrap(<boolean>)
+;no_wrap(<string>)
+;vert(<prog>)

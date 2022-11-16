@@ -1,0 +1,7 @@
+vert(<object members>)
+vert(<members>)
+vert(<array elements>)
+vert(<elements>)
+replace(<SPACES>,'')
+append(<MEMBER_COLON>, ' ')
+

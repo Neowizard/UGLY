@@ -1,0 +1,63 @@
+<comment> ::= (';' (<any-char> \ <newline>)* <newline>)
+;Tokens
+<spaces> ::= ((' ' | <tab>)*)
+<alpha> ::= 'a'-'z' | 'A'-'Z'
+<alphanum> ::= <alpha> | '0'-'9'
+<expand-to> ::= <spaces> ['::=' | ':=' | '=' | '->'] <spaces>
+<cb-lparen> ::= <spaces> '{' <spaces>
+<cb-rparen> ::= <spaces> '}' <spaces>
+<disj-op> ::= <spaces> '|' <spaces>
+<caten-op> ::= ' '*
+<sub-op> ::= <spaces> '\\' <spaces>
+<kstar> ::= '*' <spaces>
+<kplus> ::= '+' <spaces>
+<maybe> ::= '?' <spaces>
+<skip> ::= '#' <spaces>
+<trace> ::= '$' <spaces>
+<nest-lbracket> ::= <spaces> '[' <spaces>
+<nest-rbracket> ::= <spaces> ']' <spaces>
+<nest-lparen> ::= <spaces> '(' <spaces>
+<nest-rparen> ::= <spaces> ')' <spaces>
+<nt-langle> ::= <spaces> '<'
+<nt-rangle> ::= '>' <spaces>
+<lit-lquote> ::= <spaces> '\''
+<lit-rquote> ::= '\'' <spaces>
+<lit-ci-lquote> ::= <spaces> '\`'
+<lit-ci-rquote> ::= '\`' <spaces>
+<escaped> ::= '\`' | '\'' | '\\'        
+<range-dash> ::= '-'        
+<production-term> ::= <newline>
+
+;near-Leaf (non-terminals expanding to tokens)
+<ident> ::= <alpha> [<alphanum> | '_' | '-' | ' ']*
+<escape> ::= '\\' <escaped> 
+<lit-char> = [<any-char> \ <escaped> | <escape>]
+<range-ci-char> ::= <lit-ci-lquote> <lit-char> <lit-ci-rquote>
+<range-ci> ::= <range-ci-char> <range-dash> <range-ci-char>
+<range-char> ::= <lit-lquote> <lit-char> <lit-rquote>
+<range> ::= <range-char> <range-dash> <range-char>
+<epsilon> ::= <nt-langle> 'epsilon' <nt-rangle> 
+<lit-ci> ::= <lit-ci-lquote> <lit-char>+ <lit-ci-rquote>  
+<lit> ::= <lit-lquote> <lit-char>+ <lit-rquote> 
+<literal> ::= <lit> | <lit-ci>
+<term> ::= <range> | <range-ci> | <literal>
+<non-term> ::= <nt-langle> <ident> <nt-rangle>
+<nested-expr> ::= <nest-lparen> <expr> <nest-rparen> | <nest-lbracket> <expr> <nest-rbracket>
+<modifier> ::= <kstar> | <kplus> | <maybe> | <skip> | <trace>
+<operand> ::= [<non-term> | <term> | <nested-expr>] <modifier>?
+
+; Operators
+<caten> ::= <operand> (<caten-op> <operand>)*
+<disj> ::= <caten> (<disj-op> <caten>)* 
+<diff> ::= <disj> (<sub-op> <disj>)?
+
+; Productions
+<callback> ::= <cb-lparen> <ident> <cb-rparen>
+<expr> ::=  <diff> (<callback>?)
+<lhs> ::= <non-term>
+<rhs> ::= <expr> 
+<production> ::= (<lhs> <trace>?) <expand-to> <rhs> (<production-term>*)#
+
+; Grammar
+<grammar> ::= (<comment> | <production>)+ 
+<S> = <grammar>
